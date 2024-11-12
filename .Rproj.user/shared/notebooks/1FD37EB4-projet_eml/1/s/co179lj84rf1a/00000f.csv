@@ -1,0 +1,1 @@
+"0","kable(cor(datas), caption = ""Matrice de corrélation"", digits = 1, padding=0)"

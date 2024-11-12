@@ -1,0 +1,2 @@
+"0","datas1 = subset(datas, select=-c(life_exp,urb_pop,tot_fert))"
+"0","kable(head(datas1, 5), caption = ""Nouveau jeu de donnée après observation des correlations"")"

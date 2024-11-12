@@ -1,0 +1,3 @@
+"0","datas1$group <- ifelse(datas1$cbi <= median(datas1$cbi), 0, 1)"
+"0",""
+"0",""

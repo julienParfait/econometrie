@@ -1,0 +1,962 @@
+---
+output:
+  pdf_document:
+    keep_tex: yes
+    number_sections: yes
+    fig_caption: yes
+  word_document: default
+  html_document:
+    df_print: paged
+outp ut:
+  pdf_document:
+    toc: no
+    fig_caption: yes
+    number_sections: yes
+header-includes: 
+  - \usepackage{pdfpages}
+  - \usepackage{tcolorbox}
+  - \usepackage{graphicx}
+  - \usepackage{setspace}
+---
+
+```{r setup, include=FALSE}
+library(tidyr)
+library(tidyverse)
+library(dplyr)
+library(knitr)
+library(lattice)
+library(fBasics)
+library(rgl)
+library(ggforce)
+library(ks)
+library(esquisse)
+library(datarium)
+library(psych)
+library(readxl)
+library(lmtest) #Pour le test d'homosecedasticité
+library(afex)
+library(ggpubr)
+library(rstatix)
+library(lme4)
+library(MASS)
+library(nortest)
+library(car) 
+library(Rmisc) 
+library(multcomp)
+library(Publish)
+library(ggcorrplot)
+library(robustbase)
+library(glmnet)
+library(lmtest)
+library(sandwich)
+library(PerformanceAnalytics)
+library(corrplot)
+knitr::opts_chunk$set(echo = FALSE, cache=TRUE, message = FALSE, warning = FALSE)
+```
+
+\includepdf{page}
+
+\doublespacing
+
+
+
+\newpage
+
+\textcolor{blue}{\addcontentsline{toc}{section}{Avant-propos}\section*{Avant-propos}}
+
+
+\begin{tcolorbox}[colback=white!5!white,colframe=blue, title = Avant-propos fonttitle=\bfseries, arc = 5mm, coltitle = blue]
+
+Le présent rapport est rédigé dans le cadre des travaux pratiques d'économétrie du modèle linéaire (EML). En effet,
+il a pour objectif de permettre aux élèves ingénieurs statisticiens économistes, que nous sommes, de mettre en
+application les différentes méthodes d'analyse et de modélisation en économétrie.
+
+
+L'économétrie du modèle linéaire connue plus sous le nom de régression liniaire est une méthode statistique beaucoup 
+utilisée dans le domaine de la recherche. Nous abordons donc simultanément, dans ce rapport, les fondements 
+théoriques et pratiques de la modélisation des phénomènes réels. Car, comme pour toute méthode statistique, il est necessaire 
+de comprendre ces aspects avant de pouvoir la mettre en application.
+
+
+Choix des variables, modélisation, estimation, examen de la validité du modèle choisi sont des étapes auxquelles 
+nous nous sommes soumis tout au long de ce rapport. Afin d'aboutir à une seule conclusion que le taux de croissance 
+moyenne de la population est dû aux variations (positive et/ou négative) du taux de natalité, du taux de croissance 
+moyen de la population urbaine et du taux de mortalité.
+
+
+Pour aboutir à cet objectif, nous avons d'abord fait une révue théorique et empirique, ensuite une modélisation 
+s'en est suivi et enfin une conclusion. 
+
+\end{tcolorbox}
+
+\newpage
+
+\renewcommand{\contentsname}{\textcolor{blue}{Table des matières}}
+\textcolor{blue}{\tableofcontents}
+
+
+
+\renewcommand{\listfigurename}{\textcolor{blue}{Liste des figures}}
+\textcolor{blue}{\listoffigures}
+\addcontentsline{toc}{section}{Liste des figures}
+
+
+\newpage
+
+\renewcommand{\listtablename}{\textcolor{blue}{Liste des tableaux}}
+\textcolor{blue}{\listoftables}
+\addcontentsline{toc}{section}{Liste des tableaux}
+
+\newpage
+
+\textcolor{blue}{\addcontentsline{toc}{section}{Résumé}\section*{Résumé}}
+
+Dans ce rapport nous sommes intéressé aux relations qui existent entre le taux de croissance moyene de la population et les taux de mortalité, les taux de croissance de la population urbaine et les taux de natalité. Les données soumises à notre étude portent sur 184 pays et 11 caractéristiques communes à ceux-ci. Il ressort de notre étude l'existence du lien entre les variables explicatives et la variable cible qu'est le \textbf{taux de croissance moyen de la population}. Les variables indépendantes expliquent donc le taux de croissance moyen de la population.
+
+En effet, l'étude nous à permis de voir que:
+
+- le taux de croissance moyen de la population est évolue en sens inverse du taux de mortalité. Ce qui signifie que un taux de mortatlité élévé entrainerait une baisse significative croissance de la population. 
+
+- le taux de croissance est posivitement lien au taux de natalité et au taux de croissance de la population urbaine. Ce qui implique que plus on aura des naissance plus la population va croitre et plus la population urbaine va augmenter
+plus sera la population. Ces résultats sont tout aussi logique que dans la réalité. 
+
+\newpage
+
+\textcolor{blue}{\addcontentsline{toc}{section}{Introduction}\section*{Introduction}}
+
+
+La croissance démographique est un enjeu majeur qui préoccupe les décideurs politiques, les chercheurs et la société en général. La population mondiale est en constante évolution et cette croissance peut avoir des conséquences importantes sur l’environnement, l’économie et la société. Ainsi, il est crucial de comprendre comment la population évolue dans le temps et comment elle peut être modélisée pour mieux anticiper les tendances futures.
+
+
+Le taux de croissance annuel de la population est l’un des indicateurs les plus utilisés pour mesurer la croissance démographique. Ce taux mesure la différence entre le nombre de naissances et de décès, ainsi que les mouvements migratoires, sur une période donnée. La modélisation de ce taux permet de comprendre les facteurs qui influent sur la croissance démographique, tels que la fécondité, la mortalité, l’âge moyen de la population et les migrations.
+
+
+Selon les données des Nations unies, la population mondiale devrait atteindre 9,7 milliards de personnes d’ici 2050, ce qui soulève des préoccupations quant à la capacité de la planète à soutenir une telle croissance. En effet, la croissance démographique peut entraîner une augmentation de la consommation des ressources naturelles, une pression sur les infrastructures et les services publics, ainsi qu’un impact sur l’environnement et le climat.
+
+
+La modélisation du taux de croissance annuel de la population est donc essentielle pour évaluer les besoins et les défis auxquels les sociétés sont confrontées, tels que la planification des ressources, les politiques de santé publique et les programmes de développement économique. Elle peut également aider à identifier les tendances futures et à formuler des politiques et des interventions pour atténuer les impacts négatifs de la croissance démographique sur l’environnement et la société.
+Dans cette perspective, il est important de comprendre les différentes méthodes de modélisation du taux de croissance annuel de la population et leurs limites, ainsi que les données démographiques nécessaires pour effectuer ces modélisations. Cela permettra de mieux comprendre les tendances démographiques actuelles et de prévoir les évolutions futures, pour mieux planifier les politiques publiques et les investissements nécessaires.
+
+Dès lors on se pose donc la question de savoir quels sont les facteurs explicatifs ou les déterminants de la croissance annuelle de la population ? Tel sera donc l'objectif du présent documents. 
+
+Les hypothèses de recherches nécessaires sont donc : 
+
+
+H1 : le taux de croissance de la population dépend positivement du taux de natalité
+
+
+H2 : le taux de croissance de la population évolue en sens inverse avec le taux de mortalité
+
+
+H3 : le taux de croissance de la population évolue dans le même sens que celui de la population urbaine
+
+
+H4 : la croissance de la population croît à un rythme exponentielle
+
+
+
+
+\newpage 
+
+\textcolor{blue}{\section{cadre conceptuel et revue de littérature}}
+
+
+\textcolor{blue}{\subsection{cadre conceptuel}} 
+
+La littérature sur la croissance de la population a permet de montrer que de nombreux facteurs influençant la dynamique de la population, notamment le taux de natalité, le taux de mortalité et le taux de croissance de la population urbaine. Les études empiriques ont souvent utilisé des données démographiques et économiques pour évaluer l'impact de ces facteurs sur la croissance de la population. Les études théoriques ont, quant à elles, élaboré des modèles mathématiques pour comprendre les mécanismes sous-jacents à la croissance de la population.
+
+\textbf{Taux de natalité et taux de mortalité :}
+
+
+Les études empiriques ont généralement montré que le taux de natalité est positivement corrélé avec la croissance de la population. Cela est dû au fait que les naissances contribuent à l'augmentation de la population. En revanche, le taux de mortalité est négativement corrélé avec la croissance de la population, car les décès entraînent une diminution de la population. Le taux de mortalité infantile est particulièrement important, car il a un impact significatif sur la croissance de la population à long terme.
+
+\textbf{Taux de croissance de la population urbaine :}
+
+Le taux de croissance de la population urbaine a également un impact sur la croissance de la population totale. Les études empiriques ont montré que les taux de croissance de la population urbaine sont généralement plus élevés que ceux des zones rurales. Cela est dû à plusieurs facteurs, notamment l'attraction des zones urbaines en termes d'emploi, de services et de qualité de vie.
+
+\textcolor{blue}{\subsection{Modèles théoriques :}}
+
+Les modèles théoriques ont élaboré des formules mathématiques pour expliquer la croissance de la population en fonction de divers facteurs. 
+
+\textbf{A - Le modèle de Malthus} 
+
+Les modèles les plus courants incluent le modèle de Malthus, qui postule que la croissance de la population est exponentielle, tandis que la croissance des ressources disponibles est arithmétique. Selon Malthus, cela signifie que la population finira par dépasser les ressources disponibles, ce qui entraînera une baisse de la qualité de vie et des niveaux de vie pour les populations les plus pauvres. Malthus a également soutenu que les contraintes malthusiennes - telles que les maladies, les guerres et les famines - sont nécessaires pour empêcher la population de dépasser les ressources disponibles.
+
+- Limites et critiques 
+
+Le modèle de Malthus a été largement critiqué pour ses limites et ses hypothèses simplistes. Voici quelques-unes des critiques les plus courantes :
+
+- Hypothèses simplifiées 
+
+Malthus a simplifié la relation entre la croissance de la population et la croissance des ressources, en supposant que ces deux facteurs croissent à des taux constants. En réalité, ces taux sont susceptibles de varier considérablement en fonction des changements technologiques, de la productivité, des migrations, des guerres, des politiques publiques, etc.
+
+- Prédiction incorrecte de la catastrophe malthusienne  
+
+Malthus a prédit que la croissance de la population finirait par dépasser les ressources disponibles, entraînant des niveaux de vie catastrophiquement bas. Cependant, depuis l'époque de Malthus, la population mondiale a continué de croître, mais les niveaux de vie ont globalement augmenté, plutôt que diminué.
+
+- Négligence de l'impact du progrès technique 
+
+Malthus a ignoré l'impact du progrès technique sur la productivité et la disponibilité des ressources. Les avancées technologiques ont permis d'augmenter la productivité et de trouver de nouvelles sources de ressources, ce qui a permis de répondre à la croissance de la population.
+
+- Éthique de la politique de la population 
+
+Les politiques de contrôle de la population qui se basent sur les principes malthusiens ont été critiquées pour leur potentiel de violation des droits humains fondamentaux, en particulier pour les femmes et les minorités.
+
+En conclusion, bien que le modèle de Malthus ait été une première tentative de théorisation de la croissance de la population, il présente des limites et des critiques importantes. Les avancées technologiques et l'impact des politiques publiques ont permis de répondre à la croissance de la population et de garantir des niveaux de vie décents pour la plupart des gens.
+
+\textbf{B - Le modèle de Boserup}
+
+Le modèle de Boserup suggère que la croissance de la population peut être bénéfique pour le développement économique si elle est accompagnée d'une innovation technologique continue dans la production agricole. Selon Boserup, lorsque la population augmente, la pression sur les ressources naturelles, telles que les terres agricoles, augmente également. Cette pression conduit à une intensification de la production agricole, soit par une augmentation de la productivité des terres existantes, soit par la conversion de nouvelles terres. L'innovation technologique, telle que l'irrigation, la sélection des cultures, la mécanisation, etc., permet d'accroître la productivité agricole et de compenser les effets négatifs de l'augmentation de la population. En fin de compte, selon Boserup, la pression démographique stimule l'innovation technologique et améliore les niveaux de vie.
+
+- Limites et critiques :
+
+Bien que le modèle de Boserup ait été largement adopté dans la recherche en économie et en développement, il n'en demeure pas moins que certaines critiques ont été formulées. Voici quelques-unes des critiques les plus courantes :
+
+Survol de la transition démographique : Le modèle de Boserup ne prend pas en compte le rôle des transitions démographiques dans le développement économique. Les transitions démographiques impliquent une baisse de la fécondité et une augmentation de l'espérance de vie, qui peuvent contribuer à une amélioration des niveaux de vie et à un développement économique.
+
+Négligence des externalités négatives : Le modèle de Boserup ne prend pas en compte les externalités négatives qui peuvent découler de l'intensification de la production agricole. Par exemple, l'utilisation intensive de pesticides et d'engrais peut avoir des effets néfastes sur l'environnement et la santé.
+
+
+Les autres limites étant : Simplification excessive de la technologie, Limites de l'agriculture comme moteur de développement... 
+
+En conclusion, le modèle de Boserup a été une contribution importante à la compréhension de la relation entre la croissance de la population et l'innovation technologique en matière de production agricole. Cependant, il est important
+
+\newpage
+
+\textcolor{blue}{\subsection{Revue empirique}}
+
+\textbf{A. Études de corrélation entre la croissance de la population et les variables économiques}
+
+
+Les études de corrélation cherchent à établir des liens entre la croissance de la population et les variables économiques telles que le PIB, le revenu par habitant, l'investissement en capital humain, etc. Parmi les études les plus connues, on peut citer celles de Mankiw, Romer et Weil (1992) et de Barro et Sala-i-Martin (1995). Cependant, ces études ont été l'objet de critiques importantes, comme suit :
+
+Études de Mankiw, Romer et Weil (1992) :
+Cette étude a cherché à déterminer la relation entre la croissance de la population et la croissance économique dans un échantillon de pays. Les résultats ont montré une corrélation négative entre la croissance de la population et la croissance du PIB par habitant à long terme. Les pays dont la croissance démographique était plus élevée avaient des taux de croissance économique plus faibles.
+
+- Limites et critiques des études de corrélation :
+
+Problème de causalité : Les études de corrélation ne peuvent pas établir de causalité entre la croissance de la population et les variables économiques.
+
+
+Biais de sélection : Les études de corrélation peuvent être sujettes à des biais de sélection. Les pays qui ont des taux de croissance de la population élevés peuvent également avoir d'autres caractéristiques qui influencent leur développement économique. Négligence des variables non économiques
+
+
+\textbf{B. Études de causalité entre la croissance de la population et les variables économiques :}
+
+Becker et Barro ont étudié l'impact de la croissance de la population sur la croissance économique en utilisant des données de pays développés et en développement. Ils ont constaté que la croissance de la population avait un impact négatif sur la croissance économique, mais que cet impact diminuait à mesure que les pays devenaient plus riches et atteignaient un niveau plus élevé de développement.
+
+Bloom et Freeman, quant à eux, ont étudié l'impact de la croissance de la population sur le marché du travail aux États-Unis. Ils ont conclu que la croissance de la population avait un impact négatif sur le taux d'emploi et les salaires des travailleurs peu qualifiés.
+
+Cependant, il convient de souligner que ces études de causalité ont également fait l'objet de nombreuses critiques et limites. Certaines critiques portent sur les méthodes utilisées, comme l'utilisation de données agrégées qui ne permettent pas de mesurer les effets à l'échelle individuelle ou l'absence de prise en compte des interactions entre les variables.
+
+En conclusion, la littérature empirique et théorique a montré que le taux de natalité, le taux de mortalité et le taux de croissance de la population urbaine sont des facteurs clés influençant la croissance de la population. Les études ont souligné l'importance de contrôler le taux de natalité pour maintenir une croissance de la population durable.
+
+
+\textcolor{blue}{\subsection{Présentation des données et méthodologie}}
+
+\textbf{Données} 
+
+
+Les données mises à notre disposition sont issues de la base **TP EML** proposé par l'encadreur et dont l'objectif est une exploitation à bon essient à des fins d'études économétriques. Il s'agit en effet de données démographques sur 184 pays. Lesquels ont été obtenues par récensement sur les différents pays concernés en 2015. 
+
+L'idée étant d'exposer les facteurs explicatifs de l'évolution du taux de croissance démographique. Pour ce faire nous disposons de plusieurs variables telles que le taux de croissance annuelle de la population, la taux de natalité, le taux de mortalité, le taux de croissance de la population urbaine. 
+
+
+
+\textbf{Méthodologie :}
+
+\textbf{Justification du choix du modèle linéaire :} 
+
+
+La méthode de régression linéaire est couramment utilisée en économétrie pour modéliser la relation entre une variable dépendante et une ou plusieurs variables indépendantes. Elle est justifiée par plusieurs raisons :
+
+La régression linéaire est une méthode simple qui permet de modéliser une relation linéaire entre une variable dépendante et une ou plusieurs variables indépendantes.
+
+La régression linéaire est flexible et peut être appliquée à différents types de données, tels que des données en coupe transversale, des données de panel et des données de séries chronologiques. Pour le cas d'espèce nous disposons de données en coupe instantanée. 
+
+La régression linéaire permet donc de quantifier l'effet des variables indépendantes sur la variable dépendante en termes de pente et d'intercept. Cela peut aider à comprendre la nature de la relation entre les variables et à formuler des hypothèses testables.
+
+Ainsi, pour mener à bien notre modélisation, nous avons retenu le modèle suivant : 
+
+$$Y_i = \beta_0 + \beta_1 Cd_i + \beta_2 Cb_i + \beta_3 Popurb_i + \varepsilon_i$$
+Où 
+
+$Y_t$ représente le taux de croissance annueel de la population ; 
+
+$Cd_i$ : taux de mortalité ;
+
+$Cb_i$ : taux de natalité ; 
+
+$Popurb_i$ : taux de croissance moyen de la population urbaine;
+
+$\beta_0 , \beta_1 , \beta_2 , \beta_3$ : représentent les coefficients de la regression ;
+
+$\varepsilon_i$ : l'erreur de spécification du modèle, qui suit une $\mathcal{L} \mathcal{N} (0, \sigma^2)$ 
+
+
+Le choix des variables explicatives s'est fait d'abord sur la base de la revue de la littérature et ensuite sur le fait que ces variables expliquent mieux le taux de croissance de la population annuelle. 
+
+
+\newpage
+
+\textcolor{blue}{\section{Analyse descriptive des différentes variables}}
+
+Nous présenterons les variables suivant les statistiques de tendance centrales, l'étude des correlations entre la variable dépendante et les variables explicatives. Pour ce faire, nous irons des nuages de points, aux corrélations, en passant par bien d'autres indicateurs tels que la moyenne, l'étandue, etc.  
+
+
+
+Présentation du jeu de données initial : 
+
+Pour des raisons d'écriture nous allons renommer nos variables suivant l'écriture du modèle. 
+
+```{r, echo=FALSE}
+eml = read_excel("base_eml.xlsx")
+ml <- eml |> 
+  mutate(across(everything(), ~round(., 1)))
+entt = head(ml, 5)
+kable(entt, caption = "Base début", digits = 1, padding = 0)
+```
+
+
+
+```{r, echo=FALSE}
+final = tail(eml, 5)
+kable(final, caption = "Base fin", digits = 1, padding =0)
+```
+
+```{r}
+dim(eml)
+```
+
+Nous avons 184 pays (individus statistiques) pour 11 variables en colonnes. A part la variable **countries**, les autres sont tous de types numériques. C'est-à-dire des entiers. 
+
+
+\newpage
+
+\textcolor{blue}{\subsection{Tendances centrales}}
+
+Soit donc les statistiques suivantes : 
+
+```{r, echo=FALSE}
+datas_Means.Table = describe(eml)
+
+knitr::kable(datas_Means.Table, digits = 1, caption = 'Tendances centrales', padding = 0)
+```
+
+
+Nous allons subdiviser le data set en deux et considérer un nouveau qui n'aura plus les variables **countries, population_totale, under_18, under_5** qui sont en fait des milliers et non des taux. Ceci se justifie par le fait que nous voulons expliquer les variables de taux avec des variables de taux. Pour une conformité des échelles de mesure.
+
+D'où la nouvelle base : 
+
+
+```{r, echo=FALSE}
+datas = subset(eml, select = -c(countries, popT, under_18, under_5))
+
+kable(head(datas, 5), caption = "Nouveau data set", digits = 1, padding =0)
+```
+
+
+\newpage
+
+\textcolor{blue}{\subsection{Visualisation graphique}}
+
+**Nuage de points**
+
+```{r, echo=FALSE, fig.cap="Taux de croissance de la population en fonction du taux de mortalité", fig.dim=c(3.7, 2.2)}
+ggplot(datas) +
+ aes(x = cdi, y =yi
+) +
+ geom_point(shape = "circle", 
+ size = 1.5, colour = "#112446") +
+  geom_smooth(span = 0.75) +
+ theme_minimal()
+```
+
+Commentaire : on constate que le taux de croissance évolue en sens inverse avec le taux de mortalité. A mesure que le nombre de décès augmente, la population diminue. 
+
+```{r, echo=FALSE, fig.cap="Taux de croissance de la population en fonction du taux de natalité",fig.dim=c(3.7, 2.2)}
+ggplot(datas) +
+ aes(x =cbi, y =yi
+) +
+ geom_point(shape = "circle", 
+ size = 1.5, colour = "#112446") +
+  geom_smooth(span = 0.75) +
+ theme_minimal()
+```
+
+
+
+Commentaire : on constate que le taux de croisssance de la population évolue dans le même sens que celui du taux de naissances. Cela s'explique clairement par le fait que plus le nombre de naissances augmente et plus la population s'accroit. 
+\newpage 
+
+
+```{r, echo=FALSE, fig.cap="Taux de croissance de la population en fonction du taux d'espérence de vie", fig.dim=c(3.7, 2.2)}
+ggplot(datas) +
+ aes(x = life_exp , y =yi
+) +
+ geom_point(shape = "circle", 
+ size = 1.5, colour = "#112446") +
+  geom_smooth(span = 0.75) +
+ theme_minimal()
+```
+
+On constate que plus l'espérence de vie augmente et plus le rythme de croissance de la population diminue voir même, il s'avère instable. 
+
+```{r, echo=FALSE, fig.cap="Taux de croissance de la population en fonction du taux de fertilité", fig.dim=c(3.7, 2.2)}
+ggplot(datas) +
+ aes(x = tot_fert , y = yi
+) +
+ geom_point(shape = "circle", 
+ size = 1.5, colour = "#112446") +
+  geom_smooth(span = 0.75) +
+ theme_minimal()
+```
+
+Le taux de fertilité mesure la proportion des femmes à mettre au monde un nouveau. Fort est de dire qu'il évolue lui aussi dans le même sens avec le taux de croissance de la population. 
+
+
+\newpage
+
+```{r, echo=FALSE, fig.cap="Taux de croissance de la population en fonction du pourcentage de la population urbaine", fig.dim=c(3.7, 2.2)}
+ggplot(datas) +
+ aes(x = urb_pop, y = yi
+) +
+ geom_point(shape = "circle", 
+ size = 1.5, colour = "#112446") +
+  geom_smooth(span = 0.75) +
+ theme_minimal()
+```
+
+On constate que l'on ne peut se prononcer sur la liaison fonctionnelle liant le pourcentage de la population urbaine et le taux de croissance de la population. En effet, l'aprecu de ce nuage de points montre un dispersion presque elliptique entre les deux variables. Ainsi, disposant de taux annuel moyen de croissance de la population urbaine l'on pourra nauncer. 
+
+
+```{r, echo=FALSE, fig.cap="Taux de croissance de la population en fonction du taux annuel moyen de la population urbaine",fig.dim=c(3.7, 2.2)}
+ggplot(datas) +
+ aes(x =popurb , y =yi
+) +
+ geom_point(shape = "circle", 
+ size = 1.5, colour = "#112446") +
+  geom_smooth(span = 0.75) +
+ theme_minimal()
+
+```
+
+Le présent graphque montre donc que le taux annuel moyen de croissance de la population urbaine évolue dans le même sens que celui du taux de croissance de la population. En effet, la population urbaine désigne celle-là vivant dans les zones non rurales. Plus précisement les grandes agglommérations (villes). Dans le même temps celle-ci influe fortement sur l'évolution de la croissance de la population dans la mesure où le graphe permet d'observer que plus elle augmente et plus taux de croissance de la population augmente. 
+
+Par ailleurs, nous pouvons résumer tout ceci dans un tableau ou une matrice de correlation pour avoir un aperçu chiffré de cette reation. Aussi nous pourrons voir la nature de la correlation entre les autres variables. 
+
+
+
+\textcolor{blue}{\subsection{Corrélation}}
+
+```{r, echo=FALSE}
+kable(cor(datas), caption = "Matrice de corrélation", digits = 1, padding=0)
+```
+
+A la lumière de ce tableau on peut dire que les constats graphiques sont avérés. Aussi l'on observe la présence d'une correlation forte $(97\%)$ entre les variables taux de natalité et taux de fertilité. Ce qui est normal car elles sont intrinsèquement liées. l'une dépend de l'autre. C'est un soupçon de multicolinéarité. De même que la variable taux de natalité est fortement corrélée négativment avec taux d'espérence de vie. L'on serait tenter de les supprimer une des deux variables. On peut se passer de la variable taux d'espérence de vie qui fortment corrélée négativement à la varible cible. Mais aussi parce que intrinsèquement nous ne jugeons pas celle-ci comme pouvant expliquer directement le taux de croissance de la population. De même nous allons enlever la variable **urbanized_population** du simplement fait qu'elle est faiblement correlée avec la variable cible et aussi de par l'analyse graphique elle n'entretien pas de liaison fonctionnelle linéaire avec la variable dépendante. De même nous allons nous passer de  taux de fertilité qui est colinéaire au taux de natalité.
+
+Pour le reste, les soucis de multi-colinéarité, les différentes méthodes de regression que nous allons préciser plus tard pourront nous aider à pallier à cette dernière. 
+
+
+```{r, echo=FALSE}
+datas1 = subset(datas, select=-c(life_exp,urb_pop,tot_fert))
+kable(head(datas1, 5), caption = "Nouveau jeu de donnée après observation des correlations")
+```
+Nous obtenons après suppression : 
+
+```{r, echo=FALSE}
+corrr = cor(datas1)
+kable(corrr, caption = "Nouvelles corrélations", digits = 1, padding = 0)
+```
+\newpage 
+
+On peut résumer toutes ces corrélations via des scatterplots, des heatmaps, des corrplots. En effet, ils résument parfaitement toutes les informations susmentionnées. 
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.cap="Scatter plot des corrélations"}
+chart.Correlation(datas1, histogram=TRUE, pch=19)
+```
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.cap="heatmap"}
+#col= colorRampPalette(c("blue", "white", "red"))(20)
+#heatmap(x =corrr, col = col, symm = TRUE)
+```
+
+
+```{r, echo=FALSE, fig.cap="Graphique des nouvelles corrélations", fig.dim=c(3.7, 2.2)}
+ggcorrplot(cor(datas1), type = "lower", outline.color = "white", colors = c("#6D9EC1", "white", "#E46726"), lab = TRUE)
+```
+
+
+
+```{r, echo = FALSE, warning=FALSE, fig.align='center', fig.cap="Graphe des corrélations-3"}
+corrplot(corrr, type="upper", order="hclust", tl.col="black", tl.srt=45)
+```
+
+\newpage
+\textcolor{blue}{\subsection{Analyse des valeurs extrêmes}}
+
+**Histogramme des varible prises individuellement**
+
+```{r, echo=FALSE, fig.cap="taux de mortalité",fig.dim=c(3.7, 2.2)}
+par(mfrow = c(1, 4))
+ggplot(datas1) +
+  aes(x = cdi) +
+  geom_histogram(bins = 30L, fill = "#0656E5") +
+  theme_minimal()
+
+ggplot(datas1) +
+ aes(x = cbi) +
+ geom_histogram(bins = 30L, fill = "#0753DC") +
+ theme_minimal()
+
+ggplot(datas1) +
+  aes(x = popurb
+) +
+  geom_histogram(bins = 30L, fill = "#0752D7") +
+  theme_minimal()
+
+
+
+```
+
+Le vide montre les taux négatifs. Sur les variables explicatives ils ne posent aucun problème. Le constat le même que pour le taux de natalité, ainsi que pour le reste. 
+Toutefois, nous pouvons dire que les variables explicatives ne contiennent aucune valeurs manquantes. 
+
+\newpage
+```{r, echo=FALSE, fig.cap="box-plots 1", fig.align='center', fig.dim=c(4,3)}
+boxplot(datas1$cdi, col = "blue")
+
+```
+
+
+```{r,echo=FALSE, fig.cap="box-plots 2", fig.align='center', fig.dim=c(4,3)}
+boxplot(datas1$cbi, col = "cyan")
+```
+
+\newpage
+
+```{r, echo=FALSE, fig.cap="box-plots 3", fig.align='center',fig.dim=c(4,3)}
+boxplot(datas1$popurb, col = "green")
+
+```
+
+```{r, echo = FALSE, fig.cap="box-plots 4", fig.align='center',fig.dim=c(4,3)}
+boxplot(datas1$yi, col = "magenta")
+```
+
+
+De haut en bas nous avons les box-plots des : taux de mortalité, de natalité, le taux de croissance annuel moyen de la population urbaine et pour la variable cible.
+
+Nous faisons donc le constat que nous avons n'avons pas de valeurs manqauntes, sinon juste deux valeurs aberrantes pour le taux de mortalité, une pour le taux de croissance annuel moyen de la population urbaine et enfin deux pour la variable cible.  
+
+\newpage 
+
+\textcolor{blue}{\subsection{Distribution de Y :}}
+
+
+```{r, echo=FALSE, fig.cap="Distribution du taux de croissance annuel de la popultioné", fig.dim=c(4, 3.5), warning=FALSE}
+
+ggplot(data = datas1, aes(x = yi)) +
+  geom_histogram(aes(y = ..density..), binwidth = 0.2, color = "black", fill = "skyblue") + 
+  geom_density(color = "red") +
+  labs(x = "Valeur de y", y = "Fréquence") +
+  theme_classic()
+```
+
+On constate que la distribution de Y semble proche de celle d'une distribution normale. En effet, la noramlité de la distribution fait partie de l'hypothèse de la génération des données. Qui vient du fait que si les erreurs de spécification du modèle sont normales alors par ricochet la variable cible doit être normale. Ce qui assure la construction des tests du simple fait que la loi asymptotique de y soit normale. 
+
+on a : $$Y_i = \beta_0 + \beta_1 Cd_i + \beta_2 Cb_i + \beta_3 Popurb_i + \varepsilon_i$$
+
+avec $\varepsilon_i$ qui suit $\mathcal{L} \mathcal{N} (0, \sigma^2)$ et donc $Y_i$ suit une loi normale $\mathcal{N} (\beta_0 + \beta_1 Cd_i + \beta_2 Cb_i + \beta_3 Popurb_i ; \sigma^2)$ du fait que les variables explicatives sont mesurées sans erreurs -avec certitude-. 
+
+Nous effectuons donc deux test, celui de Shapiro-Wilk et celui de Kolmogorov-Smirnov. Ce dernier étant plus robuste que le premier. 
+
+\textcolor{blue}{Test de Shapiro-Wilk}
+
+les hypothèses du test sont : 
+
+$H_0$ : Normalité 
+
+$H_1$ : Absence de normalité
+
+```{r, echo=FALSE}
+shapiro.test(datas1$yi)
+```
+
+On constate que la p-value qui est de : $0.002718$ est inférieure au seuil de $5%$, du coup on rejette $H_0$, nous n'avons pas l'hypothèse de normalité.
+
+\textcolor{blue}{Test de Kolmogorov-Smirnov}
+
+```{r, echo=FALSE}
+lillie.test(datas1$yi)
+```
+
+La p-value est égale à $0.5089$ qui est supérieure au seuil de  $5%$, du coup on accepte $H_0$ et donc notre distribution suit une loi normale. Nous acceptons ce test car il est plus robuste que le premier. 
+
+
+
+\newpage 
+
+
+
+\textcolor{blue}{\section{Modélisationn, résultats et interprétation}}
+
+\textcolor{blue}{\subsection{Estimation des paramètres}}
+
+Nous reprenons notre modèle qui s'écrit comme suit : 
+
+$$Y_i = \beta_0 + \beta_1 Cd_i + \beta_2 Cb_i + \beta_3 Popurb_i + \varepsilon_i$$
+
+Nous procédons à l'estimation des paramètres ensuite nous allons tester la significativité des coefficients estimés, ensuite nous allons voir le pouvoir explicatif du modèle et la significativité globale. 
+
+```{r, echo=FALSE}
+res1 = lm(yi~cdi+cbi+popurb, data = datas1)
+res1
+```
+
+```{r, echo=FALSE}
+kable(res1$coefficients, caption = "Estimation des coefficients")
+```
+
+\textcolor{blue}{Interprétation :}
+
+On constate que le taux de mortalité a un cofficient marginal négatif à savoir $-0.11794$. Ainsi, cela confirme nos analyses descriptives. En effet, plus le taux de mortalité par pays augmente et plus la croissance de la population diminue. Alors que dans le même temp plus taux de naissance augmente et plus le taux de croissance de la population annuel augmente dû au fait que son coefficient marginal $0.03892$ est positif. On conclut également que quand le pourcentage de la population urbaine augmente alors le taux de croissance de la population augmente aussi.  
+
+\textcolor{blue}{\subsection{Inférence, intervalles de confiance et vérification des hypothèses de la régression linéaire}}
+
+Il s'agira de faire le test de student de coefficients, de fischer, et de faire le tableau d'analyse de la variance. Enfin nous allons apprécier le pouvoir explicatif du modèle.
+
+- \textcolor{blue}{Test de significativité individuelle, test de significativité globale et pouvoir explicatif du modèle}
+
+- \textcolor{blue}{Test de siginificativité individuelle}
+
+pour cela on formule le test suivant : 
+
+$H_0 : \beta_i = 0$ contre 
+
+$H_1 : \beta_i \ne 0$ avec $i =0, 1, 2, 3$. Sous $H_0$, la statistique associée à ce test suit une loi de student à $n-4$ degrés de liberté. On va conclure suivant la p-value qui est la probabilté que l'échantillon soit conforme à l'hypothèse nulle ou encore la probabilté que la satistique du test soit inférieure à un certain seuil. Si elle est inférieure au seuil de $5\%$ on rejette $H_0$ et donc le coefficient $\beta_i$ est significativement différent de $0$. 
+
+- \textcolor{blue}{Test de siginificativité globale }
+
+Il se formule comme suit : 
+
+$H_0 : \beta_0 = \beta_1= \beta_2 = \beta_3 = 0$ contre 
+
+$H_1 : \exists i,j \in \{0, 1,2,3\}$ tel que $\beta_i \ne \beta_j \ne 0$. Sous $H_0$, la statistique associée à ce test suit une loi de Fischer à $(4, n-3)$ degrés de liberté. On va conclure suivant la p-value qui est la probabilté que l'échantillon soit conforme à l'hypothèse nulle ou encore la probabilté que la satistique du test soit inférieure à un certain seuil. Si elle est inférieure au seuil de $5\%$ on rejette $H_0$ et donc le modèle est globalment significatif. 
+
+On obtient donc : 
+
+
+```{r, echo=FALSE}
+summary(res1)
+```
+La dernière colonne donne la p-value associée à tous les coefficients. On constate qu'elle est inférieur au seuil de $5\%$. Ainsi, chaque coefficient prit individuellement est significativement différent de zéro. 
+
+
+Dans le même sens on pour le test de Fischer à la dernière ligne une p-value inférieure à $2.2e-16$ et donc le modèle est globalement significatif. 
+
+
+Enfin, nous avons à l'avant dernière ligne le Multiple R-squared:  0.7783 et le Adjusted R-squared:  0.7746 qui représentent respectivement le $R^2$ : coefficient de détermination et le $R^2$ ajusté. De l'ordre de $77\%$ on peut donc dire qu'il y a une présomption de causalité entre les variables explicatives et la variable dépendante. Autrement dit, les variables explicatives choisies décrivent bien la variable cible -ici notre taux de croissance de la population-. 
+
+\newpage 
+
+\textcolor{blue}{Interprétation :}
+
+
+\textcolor{blue}{\subsection{Intervalle de confiance des paramètres}}
+
+C-dessous nous avons l'intervalle de confiance des paramètres. 
+
+```{r, echo=FALSE}
+confint(res1)
+```
+
+
+la valeur zéro ne se trouve dans aucun des intervalles ci-dessous. Cela rejoint directement le test de significativité des coefficients de students. Tous les coefficients sont significativement non nuls. 
+
+\textcolor{blue}{\subsection{vérification des hypothèses de la régression linéaire}}
+
+\textcolor{blue}{Normalité des résidus}
+
+Ci-dessous : 
+
+```{r, echo=FALSE, fig.cap="QQplot des résidus et la droite d'Henry", fig.align='center', fig.dim=c(4,4)}
+plot(res1, 2, col = "blue")
+```
+
+Ce graphe permet de voir que les résidus sont de plus en plus concentrés autour de zéro et presque tous aligner sur la droite d'Henry. On peut donc dire que les résidus suivent une loi normale. De plus nous avons la densité : 
+
+\newpage 
+
+```{r, echo=FALSE, fig.cap="Distribution des résidus", fig.align='center',fig.dim=c(4,4)}
+#plot(density(residuals(res1)), ylab = "", xlab = "", main = "", col ="blue")
+```
+
+\textcolor{blue}{Hypothèse d'absence d'auto-correlation des résidus}
+
+Pour l'autocorrélation des résidus nous procédons au test de Durbin Wattson : 
+
+```{r, echo=FALSE}
+dwtest(res1)
+```
+
+On constate que nous avons une p-valeur supérieure au seuil de $5\%$. On accepte l'hypothèse nulle d'absence d'autocorrélation des résidus. 
+
+
+\newpage
+
+\textcolor{blue}{Hypothèse d'Homoscédasticité}
+
+Nous commençons par une visualisation graphique : 
+`
+```{r, echo=FALSE, fig.cap="Dispersion de la variance résiduelle", fig.align='center',fig.dim=c(4,4)}
+plot(res1, 3, pch =19, col ="blue")
+```
+
+On constate qu'autour de cette droite nous avons une variance résiduelle non constante. Ainsi, l'on est probablement en présence de multicoloinéarité. Effectuons pour vérifier des tests statistiques. On va effecteur le test de Breuchs-Pagan, le test ncvTest (non constant variance), 
+
+```{r, echo=FALSE}
+bptest(res1)
+```
+
+On constate d'après ce test que nous avons une p-valeur au seuil de $5\%$ la variance est non constante, il y a donc Hétéroscédasticité. Utilisons aussi le ncvTest c'est-à-dire le test de Cook-Weisberg  dont les hypothèses sont aussi : 
+
+$H_0$ : Variance constante 
+
+$H_1$ : Variance non constante 
+
+
+```{r, echo=FALSE}
+ncvTest(res1)
+```
+
+
+On conclut de même qu'il y a absence d'homoscédasticité car la p-valeur étant inférieur quelque soit le seuil.
+
+Utilisons enfin le test de Goldfeld-Quandt test
+
+```{r}
+gqtest(res1)
+```
+
+Il permet de conclure au seuil de $1\%$ sur l'hypothèse de la présence d'homoscédasticité. 
+
+
+
+Ainsi, on peut conclure de même qu'il y a absence d'homoscédasticité car la p-valeur étant inférieur au seui de $5%$. Il faut donc résoudre ce problème. Il faut aussi préciser que lorsqu'il  y a hétéroscédasticité les estimateurs des MCO restent toujours sans biais mais les variances ne sont plus minimales. 
+
+Commençons par représenter les valeurs prédites. 
+
+```{r, echo=FALSE, fig.cap="Spread-Level Plot",fig.dim=c(4,4)}
+spreadLevelPlot(res1)
+```
+Nous allons supprimer la ligne rouge qui ne ous intéresse pas. 
+
+```{r, echo=FALSE, fig.cap="Spread-Level Plot 2", fig.dim=c(4, 4.2)}
+spreadLevelPlot(res1, smooth = FALSE)
+```
+
+
+\newpage 
+
+Sur le graphique ci-dessus en cas de présence d'homoscédasticité, la droite bleue devrait être parfaitement Horizontale. Par ailleurs, la commande **spreadLevelPlot** du package... de Rstudio nous sort la valeur de $P$ qu'il convient pour corriger la variable cible. Soit  : **0.6909239**. Nous allons donc élever notre variable cible à la puissance 0.6909239 et estimé le modèle à nouveau. Faisons d'abord une transformation Box-cox : 
+
+Nous prnons donc notre meilleur valeur de lambda telle que suggéré plus haut. On fait une transformation de BOX-COX sur notre target et on aura : 
+
+$$Y^* = (Y^\lambda -1)/ \lambda$$
+
+```{r, echo=FALSE}
+lambda = 0.6909239
+datas1$yi1 = ((datas$yi)^lambda -1)/lambda
+```
+
+
+On estime à nouveau le modèle et on fait le test et on obtient : 
+
+```{r, echo=FALSE}
+
+res2 =lm(yi1~cdi+cbi+popurb, data = datas1)
+summary(res2)
+```
+
+\newpage
+
+Cela n'a pas trop changé la structure de nos données. Le $R^2$ ajusté est toujours supérieur à $70\%$
+
+
+```{r, echo=FALSE}
+ncvTest(res2)
+```
+
+Ne Semble toujours pas convainquant au seuil de $2\%$ pour l'acceptation de l'homosecdasticité.
+
+
+
+
+Nous allons essayer la correction de WHITE et appliquer les MCG : 
+
+
+```{r, echo=FALSE}
+residuals <- summary(res1)$residuals
+variance <- var(residuals)
+
+```
+
+
+
+On va passer à l'estimation via le log : 
+
+```{r, echo=FALSE}
+
+corrected_data <- datas1 |> mutate(yi= log(yi))
+
+```
+
+```{r, echo=FALSE}
+res5 = glm(yi~cdi+cbi+popurb, data = corrected_data)
+summary(res5)
+```
+
+
+\textcolor{blue}{Normalité}
+
+```{r, echo=FALSE}
+lillie.test(res5$residuals)
+```
+
+
+
+\textcolor{blue}{Absence d'autocorrélation}
+
+```{r, echo=FALSE, fig.cap="Nuage des résidus du nouveau modèle", fig.dim=c(4,4), fig.align='center'}
+plot(res5$residuals, pch = 20, col = "blue", xlab = "")
+```
+Le graphique ci-dessus montre une absence de liaison fonctionnelle entre les résidus. En conclusion ils sont non autocorrélés. 
+
+
+\textcolor{blue}{Homogéneité de la variance}
+
+```{r, echo=FALSE, echo=FALSE, fig.cap="Variance des résidus", fig.dim=c(4,4), fig.align='center'}
+plot(res5, 3, pch =19, col = "blue")
+```
+On constate une présomption d'homogéneité de la variance. Effectuons des test. 
+
+```{r, echo=FALSE}
+bptest(res5, studentize=TRUE)
+```
+
+On constate que le test de Breusch-Pagan général c'est-à-dire le test de White ne nous permet pas non plus de conclure.
+
+
+Nous allons utiliser le test de Goldfeld-Quandt : 
+
+
+```{r, echo=FALSE}
+gqtest(res5)
+```
+
+On a une p-valeur supérieure au seuil de $5%$ alors on conclut donc que la variance est homogène et donc il y a absence d'hétéroscédasticité. 
+
+\newpage
+
+
+\subsection{Prévisions dans le modèle}
+
+On commence par donner quelques valeurs ajustées et valeurs prédites : 
+
+```{r, echo=FALSE, warning=FALSE}
+
+predicted = predict(res5)
+predite_obs = matrix(c(head(log(datas1$yi), 10), head(predicted, 10)), ncol = 2)
+colnames(predite_obs) = c("Valeurs observées", "Valeurs prédites")
+on_compar =kable(tail(predite_obs,3), caption = "Valeurs prédites et valeurs observées")
+on_compar
+```
+
+On peut même faire des prévisions de taux croissance de la population pour un pays quelconque. Supposons un pays ayant un taux de mortalité de $80\%$, un taux de natalité de $25,90\%$ et un taux de croissance moyen de la populationurbaine de $10.80\%$. 
+
+
+```{r, echo=FALSE}
+predict(res5, newdata=data.frame(cdi = 80, cbi= 25.90, 
+                                 popurb= 10.80),
+        se.fit=TRUE, 
+        interval = "prediction",
+        level = 0.99)
+```
+
+Ainsi, pour un taux de mortalité de $80\%$, un taux de natalité de$25,90\%$  et un taux annuel moyen de la population urbaine de $10.80\%$ nous aurons donc un taux de croissance de la population de $-7.095\%$
+
+
+Par ailleurs si nous supposons un pays ayant un taux de mortalité de $2\%$, un taux de natalité de $80,90\%$ et un taux de croissance moyen de la populationurbaine de $70.80\%$. on aura : 
+
+
+```{r, echo=FALSE}
+predict(res5, newdata=data.frame(cdi = 2, cbi= 80.90, 
+                                 popurb= 70.80),
+        se.fit=TRUE, 
+        interval = "prediction",
+        level = 0.99)
+```
+On constate qu'il aura un taux de croissance de sa population de $18\%$. 
+
+
+\textcolor{blue}{\subsection{Test de stabilité des coefficients, test de show}}
+
+Nous commençons par diviser nos données en deux sous-groupes, en fonction d'une variable explicative de notre choix (ici le taux de natalité)
+
+```{r, echo=FALSE}
+datas1$group <- ifelse(datas1$cbi <= median(datas1$cbi), 0, 1)
+
+
+```
+
+
+Ensuite on fait le test de chow et on obtient : 
+
+
+```{r, echo=FALSE}
+
+chow_test <- coeftest(res5, vcov = sandwich, df = Inf, null = "Chow")
+summary(chow_test)
+```
+Il suffit d'observer la première colonne et voir que le min correspond bien à notre plus petit coefficient, et le max à notre plus grand. 
+
+```{r,  echo=FALSE}
+chow_test
+```
+En plus on constate que l'estimation des coefficient est la même. les coefficients sont stables dans les deux sous-groupes. En d'autres termes, cela suggère que les coefficients du modèle ne diffèrent pas significativement entre les deux sous-groupes. Ils sont stables. 
+
+\newpage 
+
+\textcolor{blue}{\addcontentsline{toc}{section}{Conclusion}\section*{{Conclusion}}}
+`
+En conclusion, l’étude des déterminants du taux de croissance de la population est cruciale pour comprendre les changements démographiques à l’échelle nationale et mondiale. Notre mémoire a mis en évidence plusieurs facteurs qui influencent la croissance de la population, notamment le taux de fécondité, la mortalité et le taux de croissance de la population urbaine.
+
+Nous avons également constaté que ces facteurs ne sont pas indépendants les uns des autres et qu’ils interagissent de manière complexe pour influencer la croissance de la population. En outre, l’importance relative de chaque facteur peut varier en fonction du contexte économique, social et culturel.
+
+En fin de compte, la compréhension des déterminants de la croissance de la population est essentielle pour orienter les politiques publiques et les programmes de planification familiale afin de répondre aux besoins démographiques changeants. Les résultats de notre étude peuvent aider à informer les décisions politiques pour garantir une croissance démographique durable et équilibrée. 
+
+\textcolor{blue}{\addcontentsline{toc}{section}{Références bibliographiques}\section*{Références bibliographiques}}
+
+
+
+\begin{itemize}
+
+\item[(1)]	 Thomas R. Malthus \emph{An Essay on the Principle of Population} (Essai sur le principe de la population en français). 1st edition.1798.
+	
+\item[(2)]  Boserup \emph{The Conditions of Agricultural Growth: The Economics of Agrarian Change under Population Pressure} (Les conditions de la croissance agricole : l'économie du changement agraire sous la pression démographique en français), publié en 1965.
+  
+\item[(3)]  Mankiw, Romer et Weil (1992) \emph{A Contribution to the Empirics of Economic Growth} (Une contribution à l'analyse empirique de la croissance économique en français). Journal trimestriel "The Quarterly Journal of Economics".
+  
+\item[(4)]  Barro et Sala-i-Martin (1995) \emph{Economic Growth} (Croissance économique en français). publied by The MIT Press.
+
+\end{itemize}
+	
+
+
+
+
+
+
+
+

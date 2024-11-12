@@ -1,0 +1,6 @@
+"0",""
+"0","ggplot(data = datas1, aes(x = yi)) +"
+"0","  geom_histogram(aes(y = ..density..), binwidth = 0.2, color = ""black"", fill = ""skyblue"") + "
+"0","  geom_density(color = ""red"") +"
+"0","  labs(x = ""Valeur de y"", y = ""Fréquence"") +"
+"0","  theme_classic()"

@@ -1,0 +1,2 @@
+"0","corrr = cor(datas1)"
+"0","kable(corrr, caption = ""Nouvelles corrélations"", digits = 1, padding = 0)"

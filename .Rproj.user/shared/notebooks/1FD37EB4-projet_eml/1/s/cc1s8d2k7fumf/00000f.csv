@@ -1,0 +1,6 @@
+"0",""
+"0","predicted = predict(res5)"
+"0","predite_obs = matrix(c(head(log(datas1$yi), 10), head(predicted, 10)), ncol = 2)"
+"0","colnames(predite_obs) = c(""Valeurs observées"", ""Valeurs prédites"")"
+"0","on_compar =kable(tail(predite_obs,3), caption = ""Valeurs prédites et valeurs observées"")"
+"0","on_compar"

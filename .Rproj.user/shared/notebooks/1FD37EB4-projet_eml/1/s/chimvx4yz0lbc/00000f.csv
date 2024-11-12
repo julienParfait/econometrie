@@ -1,0 +1,1 @@
+"0","plot(res5$residuals, pch = 20, col = ""blue"", xlab = """")"

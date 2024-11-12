@@ -1,0 +1,3 @@
+"0","residuals <- summary(res1)$residuals"
+"0","variance <- var(residuals)"
+"0",""

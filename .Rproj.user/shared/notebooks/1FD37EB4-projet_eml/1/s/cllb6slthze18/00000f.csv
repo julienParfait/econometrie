@@ -1,0 +1,2 @@
+"0","final = tail(eml, 5)"
+"0","kable(final, caption = ""Base fin"", digits = 1, padding =0)"

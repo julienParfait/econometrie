@@ -1,0 +1,1 @@
+"0","#plot(density(residuals(res1)), ylab = """", xlab = """", main = """", col =""blue"")"

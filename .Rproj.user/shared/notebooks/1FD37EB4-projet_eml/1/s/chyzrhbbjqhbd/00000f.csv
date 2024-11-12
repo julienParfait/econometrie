@@ -1,0 +1,2 @@
+"0","#col= colorRampPalette(c(""blue"", ""white"", ""red""))(20)"
+"0","#heatmap(x =corrr, col = col, symm = TRUE)"

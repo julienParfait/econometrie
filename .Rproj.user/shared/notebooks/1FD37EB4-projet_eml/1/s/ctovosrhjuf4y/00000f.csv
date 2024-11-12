@@ -1,0 +1,3 @@
+"0",""
+"0","corrected_data <- datas1 |> mutate(yi= log(yi))"
+"0",""

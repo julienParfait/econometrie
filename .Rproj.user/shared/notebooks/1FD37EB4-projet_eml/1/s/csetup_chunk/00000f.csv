@@ -1,0 +1,279 @@
+"0","library(tidyr)"
+"0","library(tidyverse)"
+"2","── [1mAttaching core tidyverse packages[22m ────────────────────────────────────────── tidyverse 2.0.0 ──
+[32m✔[39m [34mdplyr    [39m 1.1.4     [32m✔[39m [34mpurrr    [39m 1.0.2
+[32m✔[39m [34mforcats  [39m 1.0.0     [32m✔[39m [34mreadr    [39m 2.1.5
+[32m✔[39m [34mggplot2  [39m 3.4.4     [32m✔[39m [34mstringr  [39m 1.5.1
+[32m✔[39m [34mlubridate[39m 1.9.3     [32m✔[39m [34mtibble   [39m 3.2.1"
+"2","── [1mConflicts[22m ──────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
+[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
+[36mℹ[39m Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors"
+"0","library(dplyr)"
+"0","library(knitr)"
+"0","library(lattice)"
+"0","library(fBasics)"
+"0","library(rgl)"
+"2","Registered S3 method overwritten by 'htmlwidgets':
+  method           from         
+  print.htmlwidget tools:rstudio
+"
+"0","library(ggforce)"
+"0","library(ks)"
+"2","
+Attachement du package : ‘ks’
+
+"
+"2","Les objets suivants sont masqués depuis ‘package:fBasics’:
+
+    vec, vech
+
+"
+"0","library(esquisse)"
+"2","Registered S3 method overwritten by 'data.table':
+  method           from
+  print.data.table     
+"
+"0","library(datarium)"
+"0","library(psych)"
+"2","
+Attachement du package : ‘psych’
+
+"
+"2","L'objet suivant est masqué depuis ‘package:fBasics’:
+
+    tr
+
+"
+"2","Les objets suivants sont masqués depuis ‘package:ggplot2’:
+
+    %+%, alpha
+
+"
+"0","library(readxl)"
+"0","library(lmtest) #Pour le test d'homosecedasticité"
+"2","Le chargement a nécessité le package : zoo
+"
+"2","
+Attachement du package : ‘zoo’
+
+"
+"2","Les objets suivants sont masqués depuis ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+"
+"0","library(afex)"
+"2","Le chargement a nécessité le package : lme4
+"
+"2","Le chargement a nécessité le package : Matrix
+"
+"2","
+Attachement du package : ‘Matrix’
+
+"
+"2","Les objets suivants sont masqués depuis ‘package:tidyr’:
+
+    expand, pack, unpack
+
+"
+"2","************
+Welcome to afex. For support visit: http://afex.singmann.science/
+"
+"2","- Functions for ANOVAs: aov_car(), aov_ez(), and aov_4()
+- Methods for calculating p-values with mixed(): 'S', 'KR', 'LRT', and 'PB'
+- 'afex_aov' and 'mixed' objects can be passed to emmeans() for follow-up tests
+- Get and set global package options with: afex_options()
+- Set sum-to-zero contrasts globally: set_sum_contrasts()
+- For example analyses see: browseVignettes(""afex"")
+************
+"
+"2","
+Attachement du package : ‘afex’
+
+"
+"2","L'objet suivant est masqué depuis ‘package:lme4’:
+
+    lmer
+
+"
+"0","library(ggpubr)"
+"0","library(rstatix)"
+"2","
+Attachement du package : ‘rstatix’
+
+"
+"2","L'objet suivant est masqué depuis ‘package:stats’:
+
+    filter
+
+"
+"0","library(lme4)"
+"0","library(MASS)"
+"2","
+Attachement du package : ‘MASS’
+
+"
+"2","L'objet suivant est masqué depuis ‘package:rstatix’:
+
+    select
+
+"
+"2","L'objet suivant est masqué depuis ‘package:dplyr’:
+
+    select
+
+"
+"0","library(nortest)"
+"0","library(car) "
+"2","Le chargement a nécessité le package : carData
+"
+"2","
+Attachement du package : ‘car’
+
+"
+"2","L'objet suivant est masqué depuis ‘package:psych’:
+
+    logit
+
+"
+"2","L'objet suivant est masqué depuis ‘package:fBasics’:
+
+    densityPlot
+
+"
+"2","L'objet suivant est masqué depuis ‘package:dplyr’:
+
+    recode
+
+"
+"2","L'objet suivant est masqué depuis ‘package:purrr’:
+
+    some
+
+"
+"0","library(Rmisc) "
+"2","Le chargement a nécessité le package : plyr
+"
+"2","------------------------------------------------------------------------------------------------
+"
+"2","You have loaded plyr after dplyr - this is likely to cause problems.
+If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+library(plyr); library(dplyr)
+"
+"2","------------------------------------------------------------------------------------------------
+"
+"2","
+Attachement du package : ‘plyr’
+
+"
+"2","Les objets suivants sont masqués depuis ‘package:rstatix’:
+
+    desc, mutate
+
+"
+"2","L'objet suivant est masqué depuis ‘package:ggpubr’:
+
+    mutate
+
+"
+"2","Les objets suivants sont masqués depuis ‘package:dplyr’:
+
+    arrange, count, desc, failwith, id, mutate, rename, summarise, summarize
+
+"
+"2","L'objet suivant est masqué depuis ‘package:purrr’:
+
+    compact
+
+"
+"0","library(multcomp)"
+"2","Le chargement a nécessité le package : mvtnorm
+"
+"2","Le chargement a nécessité le package : survival
+"
+"2","Le chargement a nécessité le package : TH.data
+"
+"2","
+Attachement du package : ‘TH.data’
+
+"
+"2","L'objet suivant est masqué depuis ‘package:MASS’:
+
+    geyser
+
+"
+"0","library(Publish)"
+"2","Le chargement a nécessité le package : prodlim
+"
+"0","library(ggcorrplot)"
+"2","
+Attachement du package : ‘ggcorrplot’
+
+"
+"2","L'objet suivant est masqué depuis ‘package:rstatix’:
+
+    cor_pmat
+
+"
+"0","library(robustbase)"
+"2","
+Attachement du package : ‘robustbase’
+
+"
+"2","L'objet suivant est masqué depuis ‘package:survival’:
+
+    heart
+
+"
+"0","library(glmnet)"
+"2","Loaded glmnet 4.1-8
+"
+"0","library(lmtest)"
+"0","library(sandwich)"
+"0","library(PerformanceAnalytics)"
+"2","Le chargement a nécessité le package : xts
+"
+"2","
+######################### Warning from 'xts' package ##########################
+#                                                                             #
+# The dplyr lag() function breaks how base R's lag() function is supposed to  #
+# work, which breaks lag(my_xts). Calls to lag(my_xts) that you type or       #
+# source() into this session won't work correctly.                            #
+#                                                                             #
+# Use stats::lag() to make sure you're not using dplyr::lag(), or you can add #
+# conflictRules('dplyr', exclude = 'lag') to your .Rprofile to stop           #
+# dplyr from breaking base R's lag() function.                                #
+#                                                                             #
+# Code in packages is not affected. It's protected by R's namespace mechanism #
+# Set `options(xts.warn_dplyr_breaks_lag = FALSE)` to suppress this warning.  #
+#                                                                             #
+###############################################################################
+"
+"2","
+Attachement du package : ‘xts’
+
+"
+"2","Les objets suivants sont masqués depuis ‘package:dplyr’:
+
+    first, last
+
+"
+"2","
+Attachement du package : ‘PerformanceAnalytics’
+
+"
+"2","Les objets suivants sont masqués depuis ‘package:fBasics’:
+
+    kurtosis, skewness
+
+"
+"2","L'objet suivant est masqué depuis ‘package:graphics’:
+
+    legend
+
+"
+"0","library(corrplot)"
+"2","corrplot 0.92 loaded
+"
+"0","knitr::opts_chunk$set(echo = FALSE, cache=TRUE, message = FALSE, warning = FALSE)"
